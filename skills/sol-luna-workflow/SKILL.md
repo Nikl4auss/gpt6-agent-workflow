@@ -83,8 +83,8 @@ Decision needed:
 ```
 
 State why Astra was consulted. Use its advice as input, then make and explain
-Sol's own decision. Astra remains read-only and does not change the workflow's
-review verdicts or revision limit.
+Sol's own decision. Consultation does not change the workflow's review verdicts
+or revision limit.
 
 If the requested Astra model is unavailable, report that plainly. Do not treat a
 fallback model or routing path as a successful Astra consultation.
