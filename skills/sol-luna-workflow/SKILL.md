@@ -35,12 +35,17 @@ Use Astra as a read-only adviser only under the consultation rules below.
 
 ## Workflow
 
+Use this workflow for project work such as implementation, debugging, research,
+documentation, and review. Answer simple conversations directly.
+
 1. Clarify only ambiguities that materially affect the result. Define the
    objective, scope, non-goals, constraints, acceptance criteria, and required
    validation.
 2. For repository work, delegate discovery to Luna before making design
-   decisions that depend on the code. For a small, already-bounded task, combine
-   discovery and implementation in one delegation.
+   decisions that depend on the code. Have Luna follow repository instructions,
+   including reading `CONTEXT.md` and relevant `docs/adr/` files when present.
+   For a small, already-bounded task, combine discovery and implementation in
+   one delegation.
 3. Evaluate Luna's evidence. Resolve architectural choices and send Luna a
    bounded implementation packet.
 4. Keep one write-capable Luna worker active at a time. Parallel Luna workers

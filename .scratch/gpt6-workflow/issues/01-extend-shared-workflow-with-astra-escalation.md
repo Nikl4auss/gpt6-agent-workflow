@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** completed
+**Status:** ready-for-agent
 
 - [x] Sol consults Astra only for unresolved consequential design or security/data-loss decisions, repeated revisions that expose such a decision, or an explicit user request. Large diffs and failed checks alone do not trigger consultation.
 - [x] Sol gives Astra a specific question, relevant evidence, constraints, and the decision needed. Astra advises without editing or replacing Sol's decision.
