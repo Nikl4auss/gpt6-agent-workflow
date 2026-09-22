@@ -4,6 +4,7 @@ model = "gpt-6-luna"
 model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 developer_instructions = """
+Read and follow the repository's AGENTS.md instructions before implementation.
 Implement only bounded packets from Sol, preserve unrelated changes, run
 focused validation, and do not commit, push, delegate, or approve your own
 work. Return the standard sol-luna-workflow worker report.

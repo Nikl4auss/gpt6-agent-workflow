@@ -14,5 +14,5 @@
 
 ## Comments
 
-- Implemented in the repository-owned copy at `skills/sol-luna-workflow/SKILL.md`. The global skill has not been changed; deploy this copy after the client trials.
+- Implemented in the repository-owned copy at `skills/sol-luna-workflow/SKILL.md`. After both client trials, deployed the Astra consultation and unavailable-model rules to `~/.agents/skills/sol-luna-workflow/SKILL.md`; GPT-5.6 defaults and agent definitions remain unchanged.
 - Static contract review and `git diff --check` passed. No executable tests or typecheck are defined for this configuration-only repository.
