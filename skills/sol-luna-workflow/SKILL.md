@@ -86,8 +86,14 @@ State why Astra was consulted. Use its advice as input, then make and explain
 Sol's own decision. Consultation does not change the workflow's review verdicts
 or revision limit.
 
-If the requested Astra model is unavailable, report that plainly. Do not treat a
-fallback model or routing path as a successful Astra consultation.
+When repeated revisions expose an unresolved consequential design, security,
+or data-loss decision, consult Astra before choosing the next review verdict.
+After two unsuccessful rounds, use `ESCALATE` and ask the user if the issue
+remains unresolved.
+
+If a requested model for any role is unavailable or routing uses another model,
+report that plainly. Do not count the fallback as successful use of the
+requested model.
 
 ## Delegation packet
 
