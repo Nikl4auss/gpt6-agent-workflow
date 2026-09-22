@@ -4,7 +4,7 @@
 
 **Blocked by:** 01: Extend the shared workflow with Astra escalation.
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
 - [x] The opt-in Sol, Luna, and Astra definitions use their intended GPT-6 models, with Sol read-only, Luna able to implement, and Astra read-only by role configuration. Codex session metadata confirms the Luna and Astra model settings; parent-selected workspace-write remains a runtime boundary caveat.
 - [x] The existing GPT-5.6 default and agent definitions remain usable and unchanged during the trial.
@@ -13,6 +13,13 @@
 - [x] The trial confirms actual model routing. An unavailable model is reported, and a fallback does not count as a successful check. Codex session metadata confirms the requested role models; the unavailable-model probe still records HTTP 400 and no fallback.
 
 ## Comments
+
+Completed two-session Codex trial (2026-09-22):
+
+- Session 1 used `codex exec --profile gpt6-trial --sandbox workspace-write --strict-config --json -C /home/nikl4auss/gpt6-codex-trial.eS0LHV`, without `--ephemeral`. Parent rollout `/home/nikl4auss/.codex/sessions/2026/09/22/rollout-2026-09-22T19-58-08-01a0cb57-41bb-7c10-beaf-21c6301f2f73.jsonl` records the workspace-write profile and fixture root. Child rollout `/home/nikl4auss/.codex/sessions/2026/09/22/rollout-2026-09-22T19-58-27-01a0cb57-8ba2-78c1-ab67-1d6c63dfd4bd.jsonl` records `agent_role=gpt6_luna`, model `gpt-6-luna`, and workspace-write permission. Luna appended exactly `Luna implementation probe complete` to `probe.txt`, preserving the baseline; `git diff --check` exited 0. Sol inspected the diff and independently checked validation, then returned `ACCEPT`.
+- Session 2 was a new invocation: `codex exec --profile gpt6-trial --sandbox read-only --strict-config --json -C /home/nikl4auss/gpt6-codex-trial.eS0LHV`. Parent rollout `/home/nikl4auss/.codex/sessions/2026/09/22/rollout-2026-09-22T20-00-14-01a0cb59-2c6d-75e3-a39d-b53985c1a923.jsonl` records model `gpt-6-sol`, read-only sandbox, and only root-read filesystem permission. Astra child rollout `/home/nikl4auss/.codex/sessions/2026/09/22/rollout-2026-09-22T20-00-32-01a0cb59-74ea-7be1-864a-100a65ece1d6.jsonl` records role `gpt6_astra`, model `gpt-6-astra`, the same root, and only root-read permission. Astra advised only; Sol made the final `ACCEPT` decision.
+- The metadata records runtime permission profiles. Astra made no write attempt because its instructions forbid write-capable actions; this does not prove a rejected write, kernel enforcement, or rule out separately authorized escalation. After capture, the disposable fixture and its captured local JSONL outputs were removed; persisted Codex rollouts remain under `~/.codex/sessions/`. Codex CLI was `0.156.0`.
+- Session 1 emitted a transient websocket HTTP 503, but the JSONL stream and persisted rollout ended in `turn.completed`; the turn completed and passed.
 
 Codex trial evidence (2026-09-22):
 

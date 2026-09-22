@@ -90,6 +90,34 @@ data-loss decision, consult Astra before choosing the next review verdict.
 After two unsuccessful rounds, use `ESCALATE` and ask the user if the issue
 remains unresolved.
 
+## Codex two-session procedure
+
+When using the opt-in Codex GPT-6 profile, separate implementation from review:
+
+1. Start a new `codex exec` invocation with `--sandbox workspace-write` for
+   Luna implementation. Give Luna the repository task and require the normal
+   report plus a handoff packet containing:
+
+    ```text
+    Diff:
+    Relevant evidence:
+    Validation:
+    Constraints:
+    Focused question:
+    Decision needed:
+    ```
+
+2. Start a separate new `codex exec` invocation with `--sandbox read-only` for
+   Sol review and, when needed, Astra advice. Sol inspects the diff and
+   validation, Astra advises only, and Sol makes the final `ACCEPT`, `REVISE`,
+   or `ESCALATE` decision.
+
+3. Check persisted rollout JSONL metadata for the requested role models,
+   `workspace-write` versus `read-only` sandbox settings, workspace root, and
+   child role/model records. Treat this as runtime permission-profile evidence
+   only: it is not a rejected-write test, and does not rule out separately
+   authorized escalation.
+
 If a requested model for any role is unavailable or routing uses another model,
 report that to the user plainly. Do not count the fallback as successful use of
 the requested model.
