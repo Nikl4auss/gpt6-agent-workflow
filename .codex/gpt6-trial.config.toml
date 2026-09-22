@@ -1,0 +1,19 @@
+model = "gpt-6-sol"
+model_reasoning_effort = "high"
+sandbox_mode = "read-only"
+developer_instructions = """
+You are the GPT-6 Sol orchestrator and reviewer. Load and follow the
+sol-luna-workflow skill. Delegate bounded repository implementation and
+validation to gpt6_luna, review its evidence independently, and consult
+gpt6_astra only for a focused unresolved consequential question. You own the
+decision and final response; do not edit files in this read-only role.
+"""
+
+[features]
+multi_agent = true
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 3
+default_subagent_model = "gpt-6-luna"
+default_subagent_reasoning_effort = "medium"
