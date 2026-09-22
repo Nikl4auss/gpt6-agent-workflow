@@ -67,7 +67,6 @@ Consult Astra only when:
 - a consequential design decision remains unresolved after Sol examines the
   available evidence;
 - a security or data-loss risk remains unresolved after that examination;
-- repeated revisions expose an unresolved consequential design problem; or
 - the user explicitly asks for Astra.
 
 A large diff or failed check alone does not justify consultation. Handle routine
@@ -86,14 +85,14 @@ State why Astra was consulted. Use its advice as input, then make and explain
 Sol's own decision. Consultation does not change the workflow's review verdicts
 or revision limit.
 
-When repeated revisions expose an unresolved consequential design, security,
-or data-loss decision, consult Astra before choosing the next review verdict.
+If repeated revisions expose an unresolved consequential design, security, or
+data-loss decision, consult Astra before choosing the next review verdict.
 After two unsuccessful rounds, use `ESCALATE` and ask the user if the issue
 remains unresolved.
 
 If a requested model for any role is unavailable or routing uses another model,
-report that plainly. Do not count the fallback as successful use of the
-requested model.
+report that to the user plainly. Do not count the fallback as successful use of
+the requested model.
 
 ## Delegation packet
 
