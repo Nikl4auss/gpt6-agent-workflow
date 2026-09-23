@@ -2,11 +2,11 @@
 
 ## Problem Statement
 
-I use a global Sol-orchestrator workflow in OpenCode and Codex across different projects. It still pins GPT-5.6 Sol and Luna, and it has no Astra role. I want to use the GPT-6 models according to the work they do best without paying for Astra on routine work, losing an independent review step, or overriding each project's rules. I also want to try the new workflow before replacing my existing defaults.
+I use a global Sol-orchestrator workflow in OpenCode and Codex across different projects. I want GPT-6 Sol and Luna according to the work they do best without paying for Astra on routine work, losing an independent review step, or overriding each project's rules. The GPT-6 workflow passed both client trials and is now the approved default, while the GPT-5.6 setup remains available for rollback.
 
 ## Solution
 
-Provide an opt-in, global GPT-6 workflow in both OpenCode and Codex. Sol is the main orchestrator and reviewer. Luna handles bounded exploration, implementation, writing, and validation. Sol consults a read-only Astra adviser for difficult, consequential decisions that it cannot resolve confidently from the available evidence, or when I request Astra explicitly. Sol remains responsible for decisions and the final response. Keep the GPT-5.6 workflow available during the trial. Promote GPT-6 to the defaults only after successful client-level checks and my approval.
+Provide a global GPT-6 workflow in both OpenCode and Codex. GPT-6 Sol is the main orchestrator and reviewer; GPT-6 Luna handles bounded exploration, implementation, writing, and validation. Sol consults a read-only GPT-6 Astra adviser for difficult, consequential decisions that it cannot resolve confidently from the available evidence, or when I request Astra explicitly. Sol remains responsible for decisions and the final response. Keep the GPT-5.6 workflow available as rollback material.
 
 ## User Stories
 
@@ -30,7 +30,7 @@ Provide an opt-in, global GPT-6 workflow in both OpenCode and Codex. Sol is the 
 18. As a developer, I want Astra to advise without editing or replacing Sol's decision, so that escalation does not break the review boundary.
 19. As a developer, I want routine failures handled by Sol and Luna without an automatic Astra call, so that a large diff or failed test alone does not raise cost.
 20. As a developer, I want simple conversation answered without worker handoffs, so that the workflow adds no needless delay to non-project questions.
-21. As a developer, I want a separate GPT-6 trial entry point in each client, so that my existing GPT-5.6 defaults remain usable while I test it.
+21. As a developer, I want the tested GPT-6 entry points retained in each client, so that the promoted defaults and GPT-5.6 rollback setup remain usable.
 22. As a developer, I want the trial agents to pin their intended GPT-6 models, so that switching only the primary does not silently leave Luna on GPT-5.6.
 23. As a developer, I want an unavailable model reported explicitly, so that I do not mistake a fallback for a successful GPT-6 trial.
 24. As a developer, I want Codex implementation sessions to let Luna edit, so that its parent sandbox setting does not make the worker read-only.
@@ -41,7 +41,9 @@ Provide an opt-in, global GPT-6 workflow in both OpenCode and Codex. Sol is the 
 ## Implementation Decisions
 
 - Use a globally discoverable shared workflow skill for the client-neutral delegation protocol. OpenCode agent definitions and a Codex profile and subagent definitions provide client-specific entry points and permissions.
-- Add a separate GPT-6 Sol primary in OpenCode and a separate GPT-6 Sol profile in Codex. Keep existing GPT-5.6 defaults and agent definitions intact during the trial.
+- Use the promoted GPT-6 Sol primary in OpenCode and Codex. Rollback restores OpenCode `model = openai/gpt-5.6-sol` and `default_agent = sol-orchestrator`; Codex `model = gpt-5.6-sol`, `agents.default_subagent_model = gpt-5.6-luna`, and developer instructions delegated to `luna_worker`. Keep Codex `sandbox_mode = read-only` during rollback.
+- Preserve the existing GPT-5.6 agents at `~/.config/opencode/agents/sol-orchestrator.md`, `~/.config/opencode/agents/luna-worker.md`, and `~/.codex/agents/luna-worker.toml`. The GPT-6 trial profile and agent files are known-good GPT-6 configuration, not GPT-5.6 rollback material.
+- The tested global GPT-6 agent files are OpenCode `~/.config/opencode/agents/gpt6-{sol,luna,astra}-trial.md` and Codex `~/.codex/agents/gpt6-{sol,luna,astra}.toml`.
 - Pin GPT-6 Sol, Luna, and Astra in their respective trial definitions. Do not depend on changing a global primary model to change a worker's explicitly configured model.
 - Sol owns clarification, scope, decomposition, architecture decisions, acceptance criteria, review, and the final response. It may inspect targeted files and diffs, but it does not edit or repair the worker's changes.
 - Luna receives bounded discovery or implementation requests, follows repository instructions, preserves unrelated work, runs relevant checks, and returns cited evidence. Discovery-only requests do not change files. Luna does not approve its own work, delegate further, commit, push, or perform destructive actions without an explicit user request.
@@ -50,8 +52,8 @@ Provide an opt-in, global GPT-6 workflow in both OpenCode and Codex. Sol is the 
 - Automatically consult Astra only when a consequential design or security/data-loss decision remains unresolved after Sol examines the evidence, or when repeated revisions expose such a design problem. An explicit user request also triggers consultation. Size or a failed check alone is insufficient.
 - Apply the agent workflow to project work such as implementation, debugging, project research, documentation, and review. Answer simple conversations directly.
 - In OpenCode, keep the primary agent's edit permission denied while allowing the Luna worker to write and restricting the Astra adviser to reading.
-- In Codex implementation trials, select workspace-write permission for the parent turn before delegation. Codex may reapply the parent's live sandbox settings to subagents. Sol's no-edit rule in that session is instructional rather than a separate enforceable sandbox boundary. Read-only sessions remain available for analysis.
-- Keep the trial opt-in. Do not promote it to the default automatically or silently substitute an unavailable model. Report model-routing failures to the user.
+- In the normal Codex workflow, select workspace-write for the parent session when Luna must edit. Use a separate read-only session for Sol's review and any Astra advice. Codex may reapply the parent's live sandbox settings to subagents; Sol's no-edit rule during workspace-write turns is instructional rather than a separate enforceable sandbox boundary. Astra's metadata test is permission-profile evidence, not proof of a rejected write or evidence that separately approved escalation is impossible.
+- Keep the approved GPT-6 selectors as defaults. Do not silently substitute an unavailable model; report model-routing failures to the user. Rollback remains a deliberate selector change using the preserved GPT-5.6 files.
 - No project schema, application API, or repository-wide configuration migration is part of this workflow.
 
 ## Testing Decisions
@@ -65,7 +67,7 @@ Provide an opt-in, global GPT-6 workflow in both OpenCode and Codex. Sol is the 
 
 ## Out of Scope
 
-- Replacing the GPT-5.6 defaults before the trial results receive user approval.
+- Changing either default without explicit user approval.
 - Project-specific agent rules, application code changes, or copying global definitions into each repository.
 - A custom router, benchmark framework, telemetry pipeline, or automatic model fallback.
 - Routine Astra participation in every task or review.
@@ -73,7 +75,7 @@ Provide an opt-in, global GPT-6 workflow in both OpenCode and Codex. Sol is the 
 
 ## Further Notes
 
-- The current workflow has a GPT-5.6 Sol primary and a GPT-5.6 Luna worker in both clients. Its shared skill already defines delegation packets and review verdicts, so the new protocol should reuse that behavior where appropriate.
-- The current Codex parent configuration is read-only, while its Luna worker requests workspace-write. Parent-turn runtime sandbox overrides can constrain the child, which is why implementation trials must select workspace-write before spawning Luna.
+- The promoted workflow has GPT-6 Sol as the primary and GPT-6 Luna as the default worker in both clients. Its shared skill already defines delegation packets and review verdicts, so the protocol reuses that behavior where appropriate.
+- The current Codex parent configuration is read-only for ordinary analysis. When Luna must edit, the normal workflow uses a workspace-write parent session, followed by a separate read-only session for Sol review and Astra advice. Parent-turn runtime sandbox overrides can constrain the child, and Sol's no-edit boundary remains instructional during workspace-write turns. Astra's metadata test does not prove a rejected write or rule out separately approved escalation.
 - Local model catalogs list the GPT-6 model IDs, but that does not prove the configured provider route or account can serve them. The trial must verify actual calls.
-- No project issue tracker, triage labels, domain glossary, or relevant ADRs were identified from the current home-directory context. Publication and the ready-for-agent label require the project tracker to be configured.
+- The GPT-6 promotion was explicitly approved after both client trials. The GPT-5.6 selector values and preserved agents document rollback; the GPT-6 trial profile and agent files document known-good GPT-6 definitions.

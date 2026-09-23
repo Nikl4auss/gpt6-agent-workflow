@@ -90,12 +90,13 @@ data-loss decision, consult Astra before choosing the next review verdict.
 After two unsuccessful rounds, use `ESCALATE` and ask the user if the issue
 remains unresolved.
 
-## Codex two-session procedure
+## Codex session procedure
 
-When using the opt-in Codex GPT-6 profile, separate implementation from review:
+In the normal Codex workflow, separate implementation from review when Luna
+must edit:
 
-1. Start a new `codex exec` invocation with `--sandbox workspace-write` for
-   Luna implementation. Give Luna the repository task and require the normal
+1. Start a new `codex exec` invocation with `--sandbox workspace-write` for the
+   parent session and Luna implementation. Give Luna the repository task and require the normal
    report plus a handoff packet containing:
 
     ```text
@@ -110,7 +111,8 @@ When using the opt-in Codex GPT-6 profile, separate implementation from review:
 2. Start a separate new `codex exec` invocation with `--sandbox read-only` for
    Sol review and, when needed, Astra advice. Sol inspects the diff and
    validation, Astra advises only, and Sol makes the final `ACCEPT`, `REVISE`,
-   or `ESCALATE` decision.
+   or `ESCALATE` decision. Sol's no-edit boundary during the workspace-write
+   session is instructional rather than a separate enforceable sandbox boundary.
 
 3. Check persisted rollout JSONL metadata for the requested role models,
    `workspace-write` versus `read-only` sandbox settings, workspace root, and
